@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C.A.B.A.L. - Biometric Access</title>
+    <style>
+        /* CSS Variables for Theme Colors */
+        :root {
+            --bg-color: #1a1a2e;
+            --text-color: #f5f5f5;
+            --accent-color: #16213e;
+            --button-bg: #0f3460;
+            --button-text: #f5f5f5;
+            --button-hover-bg: #1b75bc;
+            --error-text: #ff4d4d;
+            --success-bg: #2ecc71;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            text-align: center;
+        }
+
+        header {
+            background-color: var(--accent-color);
+            padding: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: var(--text-color);
+        }
+
+        header p {
+            margin: 5px 0;
+            font-size: 1.2em;
+            color: #cfcfcf;
+        }
+
+        main {
+            margin: 20px auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            background: var(--accent-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        main h2 {
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        main p {
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--button-hover-bg);
+        }
+
+        #message {
+            color: var(--error-text);
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>C.A.B.A.L. Interface</h1>
+        <p>Access the secure interface</p>
+    </header>
+    <main>
+        <h2>Secure Biometric Login</h2>
+        <p>Click the button below to access the interface using your biometric data.</p>
+        <button id="accessButton">Access Interface</button>
+        <p id="message"></p>
+    </main>
+
+    <script>
+        // Function to initiate biometric authentication
+        async function authenticateBiometrics() {
+            const messageElement = document.getElementById('message');
+            messageElement.textContent = ""; // Clear previous messages
+            try {
+                // Check if WebAuthn is supported by the browser
+                if (!window.PublicKeyCredential) {
+                    messageElement.textContent = "Biometric authentication is not supported on this device.";
+                    return;
+                }
+
+                // Placeholder for biometric credential request
+                const publicKeyCredentialRequestOptions = {
+                    challenge: new Uint8Array(32), // Replace with actual challenge from your server
+                    allowCredentials: [],
+                    timeout: 60000,
+                    userVerification: "preferred",
+                };
+
+                // Attempt biometric authentication
+                const credential = await navigator.credentials.get({
+                    publicKey: publicKeyCredentialRequestOptions,
+                });
+
+                if (credential) {
+                    alert("Biometric authentication successful!");
+                    // Redirect to the secure interface
+                    window.location.href = "interface.html"; // Replace with the actual interface URL
+                } else {
+                    messageElement.textContent = "Biometric authentication failed. Please try again.";
+                }
+            } catch (error) {
+                messageElement.textContent = "An error occurred: " + error.message;
+            }
+        }
+
+        // Attach event listener to the button
+        document.getElementById('accessButton').addEventListener('click', authenticateBiometrics);
+    </script>
+    <button onclick="logout()">Log Out</button>
+    <script>
+        function logout() {
+            alert("Logging out...");
+            window.location.href = "index.html"; // Redirect to login page
+        }
+    </script>
+
+</body>
+
+</html>
